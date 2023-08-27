@@ -11,10 +11,7 @@ const app = express();
 /* MIDDLEWARES */
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
-const FRONT_END_URL = process.env.FRONT_END_URL';
-const corsOptions = {
-  origin: FRONT_END_URL,
-};
+
 app.use(cors({
   origin: 'https://multidownloadweb.netlify.app'
 }));
