@@ -5,18 +5,24 @@ import {
   Box,
   FormControl,
   FormLabel,
-  Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Progress, // Import the Progress component
 } from "@chakra-ui/react";
-import makeRequest from "../../../axiosHandle/axiosRequests";
-import { Alert, message } from "antd";
-import ResultVideo from "./Results";
 
-// youtube video convert
+import { Alert, message } from "antd";
+import axios from "axios";
+
 const YoutubeVideoDownloadPage = () => {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState("");
-  const [resultLoading, setResultLoading] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isValidUrl, setIsValidUrl] = useState(true);
 
   const handleUrlChange = (e) => {
@@ -25,35 +31,53 @@ const YoutubeVideoDownloadPage = () => {
     setIsValidUrl(true);
   };
 
-  const handleConvert = async (e) => {
-    e.preventDefault();
+  function isValidYoutubeUrl(inputUrl) {
+    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/i;
+    return pattern.test(inputUrl);
+  }
 
+  const handleDownload = async (e) => {
+    e.preventDefault();
+    onOpen();
+  };
+
+  const handleConfirmDownload = async () => {
+    onClose();
     setLoading(true);
-    await makeRequest("/youtube/convert-video", "POST", null, { videoUrl: url })
-      .then((data) => {
-        if (data.success) {
-          setLoading(false);
-          message.success(data.message);
-          setResultLoading(true);
-          setTimeout(() => {
-            setResult(data.fileDetails);
-            setResultLoading(false);
-          }, 3000);
-          setUrl("");
-          return;
-        } else {
-          message.error(data.message);
-          setLoading(false);
-          setResult("");
-          return;
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-        setResult("");
-        return;
+
+    const videoUrl = url;
+
+    if (!isValidYoutubeUrl(url)) {
+      message.error("Please enter a valid YouTube URL.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`/download?url=${videoUrl}`, {
+        responseType: "blob",
       });
+
+      if (response.data.success !== false) {
+        message.success("Downloading Started...");
+        const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", "video.mp4");
+        document.body.appendChild(link);
+        link.click();
+        setLoading(false);
+        setUrl("");
+      } else {
+        message.error(response.data.message || "An error occurred.");
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      message.error("An error occurred.");
+      setLoading(false);
+      return;
+    }
   };
 
   return (
@@ -64,7 +88,7 @@ const YoutubeVideoDownloadPage = () => {
       >
         YouTube Video Downloader
       </h4>
-      <form onSubmit={handleConvert}>
+      <form onSubmit={handleDownload}>
         <FormControl>
           <FormLabel>Enter YouTube video URL</FormLabel>
           <Input
@@ -72,6 +96,7 @@ const YoutubeVideoDownloadPage = () => {
             value={url}
             onChange={handleUrlChange}
             mb={4}
+            required
             isInvalid={!isValidUrl}
           />
           {!isValidUrl && (
@@ -88,40 +113,28 @@ const YoutubeVideoDownloadPage = () => {
           colorScheme="blue"
           width={"100%"}
           isLoading={loading}
-          loadingText="Converting..."
+          loadingText="Downloading..."
         >
-          Convert
+          Download now
         </Button>
       </form>
-
-      {resultLoading ? (
-        <Box
-          p={4}
-          bg="gray.100"
-          borderRadius="md"
-          marginBottom={"5px"}
-          textAlign={"center"}
-          mt={"10px"}
-        >
-          <Spinner size="xl" color="blue.500" />
-        </Box>
-      ) : (
-        result && (
-          <Box
-            p={4}
-            bg="gray.100"
-            borderRadius="md"
-            marginBottom={"5px"}
-            textAlign={"center"}
-            mt={"10px"}
-          >
-            {result && (
-              <ResultVideo fileDetails={result} />
-              // <Text>Suces </Text>
-            )}
-          </Box>
-        )
-      )}
+      {/* Confirmation Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirm Download</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Are you sure you want to start the download?</ModalBody>
+          <ModalFooter>
+            <Button colorScheme="green" mr={3} onClick={handleConfirmDownload}>
+              Download
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
