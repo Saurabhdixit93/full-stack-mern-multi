@@ -11,14 +11,7 @@ import ForgotPasswordPage from "./Pages/UserMain/ForgotPassword";
 import PasswordUpdateForm from "./Pages/UserMain/UpdatePassword";
 import HomePage from "./Pages/HomePage";
 import NotFound from "./Pages/UserMain/404";
-import {
-  ChakraProvider,
-  CSSReset,
-  Center,
-  Box,
-  Flex,
-  Text,
-} from "@chakra-ui/react";
+import { ChakraProvider, CSSReset, Center, Text, Box } from "@chakra-ui/react";
 import About from "./Pages/WebPages/about";
 import YoutubeDownloadPage from "./Pages/WebPages/youtubeDownload";
 import { useEffect, useState } from "react";
@@ -29,21 +22,13 @@ axios.defaults.baseURL = process.env.REACT_APP_BACKEND_BASE;
 
 function PageLoading() {
   return (
-    <Center minH="50vh">
-      <Flex direction="column" align="center">
-        <Box
-          w="6rem"
-          h="6rem"
-          borderWidth="4px"
-          borderColor="white.500"
-          borderTop="4px solid transparent"
-          borderRadius="full"
-          animation="spin 1s linear infinite"
-        />
-        <Text mt="4" fontWeight="bold" color="black.500">
-          Loading...
-        </Text>
-      </Flex>
+    <Center minH="50vh" flexDirection="column">
+      <Box className="loading-container">
+        <Box className="shimmer"></Box>
+      </Box>
+      <Text mt="4" fontWeight="bold" color="white">
+        Loading...
+      </Text>
     </Center>
   );
 }
@@ -55,6 +40,7 @@ function App() {
   if (token) {
     var user = getUserFromToken(token);
   }
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
