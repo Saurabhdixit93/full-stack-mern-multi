@@ -73,6 +73,7 @@ const Header = () => {
     profilePic: "",
   });
 
+  // input change with base64 for file
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
@@ -91,6 +92,7 @@ const Header = () => {
     }
   };
 
+  // handle account details update
   const handleSaveClick = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
@@ -143,6 +145,15 @@ const Header = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // clear saved details also when logout
+  const clearUserData = (userId) => {
+    localStorage.removeItem(`profile-pic:${userId}`);
+    localStorage.removeItem(`email:${userId}`);
+    localStorage.removeItem(`name:${userId}`);
+  };
+
+  // get current logged use details
   const fetchCurrent = async () => {
     if (user) {
       const userId = user?.userId;
@@ -168,6 +179,7 @@ const Header = () => {
     }
   };
 
+  // set current user details
   useEffect(() => {
     if (cachedProfilePic || cachedName || cachedEmail) {
       setCurrentProfile(cachedProfilePic);
@@ -180,6 +192,7 @@ const Header = () => {
     }
   }, [user]);
 
+  // handle logout
   const handleLogout = async (e) => {
     e.preventDefault();
     if (user) {
@@ -187,6 +200,7 @@ const Header = () => {
       if (confirmed) {
         message.success("Logout Successful");
         setTimeout(() => {
+          clearUserData(user?.userId);
           Cookies.remove("USER_SESSION_COOKIE");
           window.location.reload();
         }, 2000);
@@ -199,6 +213,7 @@ const Header = () => {
     }
   };
 
+  // handle delete use Account
   const handleDeleteAccount = async (e) => {
     e.preventDefault();
     const confirmed = window.confirm(
@@ -214,7 +229,8 @@ const Header = () => {
         .then(async (data) => {
           if (data.success) {
             setAlert({ type: "success", message: `${data.message}` });
-            await Cookies.remove("USER_SESSION_COOKIE");
+            clearUserData(user?.userId);
+            Cookies.remove("USER_SESSION_COOKIE");
             window.location.reload();
             return;
           } else {
@@ -240,6 +256,7 @@ const Header = () => {
       return;
     }
   };
+
   return (
     <>
       <header className="bg-gray-800 text-white py-4 fixed top-0 left-0 w-full z-50">
