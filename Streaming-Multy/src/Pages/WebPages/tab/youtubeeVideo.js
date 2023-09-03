@@ -13,7 +13,6 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Progress, // Import the Progress component
 } from "@chakra-ui/react";
 
 import { Alert, message } from "antd";
