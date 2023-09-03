@@ -35,7 +35,7 @@ function PageLoading() {
 
 // main app
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const token = getTokenCookie();
   if (token) {
     var user = getUserFromToken(token);
