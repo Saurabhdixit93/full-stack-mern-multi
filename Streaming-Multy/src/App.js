@@ -16,7 +16,7 @@ import About from "./Pages/WebPages/about";
 import YoutubeDownloadPage from "./Pages/WebPages/youtubeDownload";
 import { useEffect, useState } from "react";
 import InstagramDownloadForm from "./Pages/WebPages/IntagramVideo";
-
+import HeaderLoader from "./components/Header/HeaderLoading";
 import StreamingPage from "./Pages/WebPages/Streaming/MultipleChannel";
 axios.defaults.baseURL = process.env.REACT_APP_BACKEND_BASE;
 
@@ -42,16 +42,16 @@ function App() {
   }
 
   useEffect(() => {
-    setTimeout(() => {
+    window.addEventListener("load", () => {
       setIsLoading(false);
-    }, 4000);
+    });
   }, []);
 
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Header />
-
+        <HeaderLoader />
         <div className="mt-24">
           {isLoading ? (
             <PageLoading />
