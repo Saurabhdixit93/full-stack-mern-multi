@@ -42,13 +42,10 @@ function App() {
   }
 
 useEffect(() => {
-    window.addEventListener("load", () => {
+    // Simulate loading delay for demonstration purposes
+    setTimeout(() => {
       setIsLoading(false);
-    });
-    // Add an event listener for the DOMContentLoaded event
-    document.addEventListener("DOMContentLoaded", () => {
-      setIsLoading(false);
-    });
+    },5000); 
   }, []);
 
   return (
