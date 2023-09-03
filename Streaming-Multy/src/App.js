@@ -41,11 +41,10 @@ function App() {
     var user = getUserFromToken(token);
   }
 
-useEffect(() => {
-    // Simulate loading delay for demonstration purposes
+  useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    },5000); 
+    }, 4000);
   }, []);
 
   return (
