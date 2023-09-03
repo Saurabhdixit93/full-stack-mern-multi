@@ -41,11 +41,22 @@ function App() {
     var user = getUserFromToken(token);
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 4000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 4000);
+  // }, []);
+useEffect(() => {
+  // Add an event listener for the "load" event
+  window.addEventListener("load", () => {
+    setIsLoading(false);
+  });
+
+  // Add an event listener for the "DOMContentLoaded" event
+  document.addEventListener("DOMContentLoaded", () => {
+    setIsLoading(false);
+  });
+}, []);
 
   return (
     <ChakraProvider>
