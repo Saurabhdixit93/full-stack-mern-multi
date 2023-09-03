@@ -41,8 +41,12 @@ function App() {
     var user = getUserFromToken(token);
   }
 
-  useEffect(() => {
+useEffect(() => {
     window.addEventListener("load", () => {
+      setIsLoading(false);
+    });
+    // Add an event listener for the DOMContentLoaded event
+    document.addEventListener("DOMContentLoaded", () => {
       setIsLoading(false);
     });
   }, []);
