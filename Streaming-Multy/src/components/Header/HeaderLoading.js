@@ -13,7 +13,7 @@ const HeaderLoader = () => {
 
     // Add an event listener for the window's load event
     window.addEventListener("load", finishLoading);
-
+    document.addEventListener("DOMContentLoaded", finishLoading);
     // Simulate loading progress
     const interval = setInterval(() => {
       setProgress((prevProgress) => {
@@ -28,6 +28,7 @@ const HeaderLoader = () => {
 
     return () => {
       window.removeEventListener("load", finishLoading);
+      document.removeEventListener("DOMContentLoaded", finishLoading);
       clearInterval(interval);
     };
   }, []);
