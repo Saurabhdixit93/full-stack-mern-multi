@@ -11,10 +11,18 @@ const app = express();
 /* MIDDLEWARES */
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
+const allowedOrigins = [
+  'https://multidownloadweb.onrender.com',
+  'http://localhost:3000' 
+];
 
 app.use(cors({
-  origin: 'https://multidownloadweb.onrender.com'
+  origin: allowedOrigins,
 }));
+
+// app.use(cors({
+//   origin: 'https://multidownloadweb.onrender.com'
+// }));
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
